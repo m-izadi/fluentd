@@ -30,27 +30,27 @@ services:
           "      - localhost\n"\
           "    ip:\n"\
           "      - 127.0.0.1\n"\
-          "      - 192.168.178.51\n"\
-          "      - 192.168.178.52\n"\
-          "      - 192.168.178.53\n"\
+          "      - 192.168.7.250\n"\
+          "      - 192.168.7.251\n"\
+          "      - 192.168.7.252\n"\
           "  - name: es02\n"\
           "    dns:\n"\
           "      - es02\n"\
           "      - localhost\n"\
           "    ip:\n"\
           "      - 127.0.0.1\n"\
-          "      - 192.168.178.51\n"\
-          "      - 192.168.178.52\n"\
-          "      - 192.168.178.53\n"\
+          "      - 192.168.7.250\n"\
+          "      - 192.168.7.251\n"\
+          "      - 192.168.7.252\n"\
           "  - name: es03\n"\
           "    dns:\n"\
           "      - es03\n"\
           "      - localhost\n"\
           "    ip:\n"\
           "      - 127.0.0.1\n"\
-          "      - 192.168.178.51\n"\
-          "      - 192.168.178.52\n"\
-          "      - 192.168.178.53\n"\
+          "      - 192.168.7.250\n"\
+          "      - 192.168.7.251\n"\
+          "      - 192.168.7.252\n"\
           > config/certs/instances.yml;
           bin/elasticsearch-certutil cert --silent --pem -out config/certs/certs.zip --in config/certs/instances.yml --ca-cert config/certs/ca/ca.crt --ca-key config/certs/ca/ca.key;
           unzip config/certs/certs.zip -d config/certs;
@@ -71,7 +71,7 @@ services:
       timeout: 5s
       retries: 120
     networks:
-      - elastic
+      - efk
 
   es01:
     depends_on:
@@ -81,7 +81,7 @@ services:
     container_name: es01
     volumes:
       - /data/elastic/certs:/usr/share/elasticsearch/config/certs
-      - /data/elastic/data:/usr/share/elasticsearch/data
+      - /data/elastic/data-es01:/usr/share/elasticsearch/data
       - /data/elastic/backups:/usr/share/elasticsearch/backups
     ports:
       - ${ES_PORT}:9200
@@ -104,6 +104,7 @@ services:
       - xpack.security.transport.ssl.verification_mode=certificate
       - xpack.license.self_generated.type=${LICENSE}
       - path.repo=/usr/share/elasticsearch/backups
+      - TZ=Asia/Tehran
 
     mem_limit: ${MEM_LIMIT}
     ulimits:
@@ -120,17 +121,17 @@ services:
       timeout: 10s
       retries: 120
     networks:
-      - elastic
+      - efk
 
   es02:
-    depends_on:
-      - es01
+    # depends_on:
+    #   - es01
     image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
     volumes:
       - /data/elastic/certs:/usr/share/elasticsearch/config/certs
-      - /data/elastic/data_es02:/usr/share/elasticsearch/data
+      - /data/elastic/data-es02:/usr/share/elasticsearch/data
       - /data/elastic/backups:/usr/share/elasticsearch/backups
-
+    container_name: es02
     environment:
       - node.name=es02
       - cluster.name=${CLUSTER_NAME}
@@ -149,6 +150,8 @@ services:
       - xpack.security.transport.ssl.verification_mode=certificate
       - xpack.license.self_generated.type=${LICENSE}
       - path.repo=/usr/share/elasticsearch/backups
+      - TZ=Asia/Tehran
+
     mem_limit: ${MEM_LIMIT}
     ulimits:
       memlock:
@@ -164,15 +167,16 @@ services:
       timeout: 10s
       retries: 120
     networks:
-      - elastic
+      - efk
 
   es03:
-    depends_on:
-      - es02
+    # depends_on:
+    #   - es02
     image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
+    container_name: es03
     volumes:
       - /data/elastic/certs:/usr/share/elasticsearch/config/certs
-      - /data/elastic/data_es03:/usr/share/elasticsearch/data
+      - /data/elastic/data-es03:/usr/share/elasticsearch/data
       - /data/elastic/backups:/usr/share/elasticsearch/backups
     environment:
       - node.name=es03
@@ -192,6 +196,7 @@ services:
       - xpack.security.transport.ssl.verification_mode=certificate
       - xpack.license.self_generated.type=${LICENSE}
       - path.repo=/usr/share/elasticsearch/backups
+      - TZ=Asia/Tehran
 
     mem_limit: ${MEM_LIMIT}
     ulimits:
@@ -208,7 +213,7 @@ services:
       timeout: 10s
       retries: 120
     networks:
-      - elastic
+      - efk
 
   kibana:
     depends_on:
@@ -226,6 +231,7 @@ services:
     ports:
       - ${KIBANA_PORT}:5601
     environment:
+      - TZ=Asia/Tehran
       - SERVERNAME=kibana
       - ELASTICSEARCH_HOSTS=https://es01:9200
       - ELASTICSEARCH_USERNAME=kibana_system
@@ -242,18 +248,18 @@ services:
       timeout: 10s
       retries: 120
     networks:
-      - elastic
+      - efk
 
 networks:
-  elastic:
+  efk:
     external: true
-    name: elastic
+    name: efk
 
 
 
-# volumes:
-#   certs:
-#     driver: local
+volumes:
+  certs:
+    driver: local
 #   esdata01:
 #     driver: local
 #   esdata02:

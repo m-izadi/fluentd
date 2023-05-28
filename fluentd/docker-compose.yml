@@ -11,12 +11,29 @@ services:
       options:
         fluentd-address: localhost:24224
         tag: httpd.access
+    networks:
+      - efk
 
   fluentd:
     build: ./fluentd
+    # image: fluentd:v1
+    container_name: fluentd-server
     volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localhost:/etc/localhost:ro
       - ./fluentd/conf:/fluentd/etc
-
     ports:
+      - "24230:24230"
+      - "24230:24230/udp"
       - "24224:24224"
       - "24224:24224/udp"
+      - "8888:8888"
+      - "8888:8888/udp"
+    networks:
+      - efk
+    environment:
+      - TZ=Asia/Tehran
+networks:
+  efk:
+    external: true
+    name: efk
