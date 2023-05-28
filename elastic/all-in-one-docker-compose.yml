@@ -79,6 +79,7 @@ services:
         condition: service_healthy
     image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
     container_name: es01
+    restart: always
     volumes:
       - /data/elastic/certs:/usr/share/elasticsearch/config/certs
       - /data/elastic/data-es01:/usr/share/elasticsearch/data
@@ -132,6 +133,7 @@ services:
       - /data/elastic/data-es02:/usr/share/elasticsearch/data
       - /data/elastic/backups:/usr/share/elasticsearch/backups
     container_name: es02
+    restart: always
     environment:
       - node.name=es02
       - cluster.name=${CLUSTER_NAME}
@@ -174,6 +176,7 @@ services:
     #   - es02
     image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
     container_name: es03
+    restart: always
     volumes:
       - /data/elastic/certs:/usr/share/elasticsearch/config/certs
       - /data/elastic/data-es03:/usr/share/elasticsearch/data
@@ -225,6 +228,7 @@ services:
       #   condition: service_healthy
     image: docker.elastic.co/kibana/kibana:${STACK_VERSION}
     container_name: kibana
+    restart: always
     volumes:
       - /data/elastic/certs:/usr/share/kibana/config/certs
       - /data/kibana/data:/usr/share/kibana/data

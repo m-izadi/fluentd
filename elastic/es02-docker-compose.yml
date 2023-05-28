@@ -9,6 +9,7 @@ services:
       - /data/elastic/data:/usr/share/elasticsearch/data
       - /data/elastic/backups:/usr/share/elasticsearch/backups
     container_name: es02
+    restart: always
     environment:
       - node.name=es02
       - cluster.name=${CLUSTER_NAME}

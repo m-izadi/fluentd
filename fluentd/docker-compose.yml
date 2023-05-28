@@ -1,23 +1,24 @@
 version: "3"
 services:
-  web:
-    image: httpd
-    ports:
-      - "80:80"
-    links:
-      - fluentd
-    logging:
-      driver: "fluentd"
-      options:
-        fluentd-address: localhost:24224
-        tag: httpd.access
-    networks:
-      - efk
+  # web:
+  #   image: httpd
+  #   ports:
+  #     - "80:80"
+  #   links:
+  #     - fluentd
+  #   logging:
+  #     driver: "fluentd"
+  #     options:
+  #       fluentd-address: localhost:24224
+  #       tag: httpd.access
+  #   networks:
+  #     - efk
 
   fluentd:
     build: ./fluentd
     # image: fluentd:v1
     container_name: fluentd-server
+    restart: always
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localhost:/etc/localhost:ro
