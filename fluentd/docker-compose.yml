@@ -18,11 +18,11 @@ services:
     build: ./fluentd
     # image: fluentd:v1
     container_name: fluentd-server
-    restart: always
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localhost:/etc/localhost:ro
       - ./fluentd/conf:/fluentd/etc
+      - /data/elastic/certs/ca:/fluentd/certs/ca
     ports:
       - "24230:24230"
       - "24230:24230/udp"
