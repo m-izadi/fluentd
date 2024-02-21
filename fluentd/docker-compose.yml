@@ -21,7 +21,7 @@ services:
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localhost:/etc/localhost:ro
-      - ./fluentd/conf:/fluentd/etc
+      - ./conf:/fluentd/etc
       - /data/elastic/certs/ca:/fluentd/certs/ca
     ports:
       - "24230:24230"
